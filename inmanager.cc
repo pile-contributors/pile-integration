@@ -40,6 +40,9 @@ using namespace intest;
 
 Manager * Manager::singleton_ = NULL;
 
+static QString s_print_option ("--print:");
+static bool print_test_separators = false;
+
 /*  DATA    ================================================================ */
 //
 //
@@ -47,11 +50,76 @@ Manager * Manager::singleton_ = NULL;
 //
 /*  FUNCTIONS    ----------------------------------------------------------- */
 
+/* ------------------------------------------------------------------------- */
+void terminate_with_error (int error_code)
+{
+    Manager::end ();
+    exit (error_code);
+}
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+void prcess_print_arguments (const QString & arg)
+{
+    // example: --print:std_err
+    // example: --print:separators
+    // example: --print:command_line,error_code_list,exit_code,exit_stat,status_list,std_all,std_err,std_out,time
+    int print_flags = intest::Manager::flags ();
+    QStringList sl_print =
+            arg.mid (s_print_option.length ())
+               .toLower ().split (",");
+    foreach(const QString & s_print_arg, sl_print) {
+        if (s_print_arg == "all") {
+            print_flags = intest::ALL_FLAGS;
+        } else if (s_print_arg == "std_out") {
+            print_flags = print_flags | intest::PRINT_STD_OUT;
+        } else if (s_print_arg == "std_err") {
+            print_flags = print_flags | intest::PRINT_STD_ERR;
+        } else if (s_print_arg == "std_all") {
+            print_flags = print_flags | intest::PRINT_STD_ALL;
+        } else if (s_print_arg == "exit_code") {
+            print_flags = print_flags | intest::PRINT_EXIT_CODE;
+        } else if (s_print_arg == "exit_stat") {
+            print_flags = print_flags | intest::PRINT_EXIT_STAT;
+        } else if (s_print_arg == "time") {
+            print_flags = print_flags | intest::PRINT_TIME;
+        } else if (s_print_arg == "command_line") {
+            print_flags = print_flags | intest::PRINT_COMMAND_LINE;
+        } else if (s_print_arg == "error_code_list") {
+            print_flags = print_flags | intest::PRINT_ERROR_CODE_LIST;
+        } else if (s_print_arg == "status_list") {
+            print_flags = print_flags | intest::PRINT_STATUS_LIST;
+        } else if (s_print_arg == "separators") {
+            print_test_separators = true;
+        } else {
+            intest::Manager::printLn (
+                        QString("Invalid argument to --print: %1")
+                        .arg (s_print_arg));
+            terminate_with_error (-1);
+        }
+    }
+    intest::Manager::setFlags (print_flags);
+}
+/* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
 int			main				(int argc, char *argv[])
 {
     QCoreApplication app (argc, argv);
+    bool b_first = true;
+    foreach(const QString & arg, QCoreApplication::arguments ()) {
+        if (b_first) {
+            b_first = false;
+        } else if (arg.startsWith (s_print_option)) {
+            prcess_print_arguments (arg);
+        } else {
+            intest::Manager::printLn (
+                        QString("Invalid argument: %1")
+                        .arg (arg));
+            terminate_with_error (-1);
+        }
+    }
+
     QCoreApplication::setOrganizationName (PILE_INTEGRATION_ORGANIZATION);
     QCoreApplication::setOrganizationDomain (PILE_INTEGRATION_DOMAIN);
     QCoreApplication::setApplicationName (PILE_INTEGRATION_APPNAME);
@@ -79,7 +147,6 @@ Manager::Manager() :
     }
     d_->noquote ().nospace ();
 
-    flags_ = ALL_FLAGS;
 }
 /* ========================================================================= */
 
@@ -135,7 +202,9 @@ int Manager::execAll()
 {
     autocreate ();
 
-    PRNT << "[][][][][][][][][][][][][][][][][][][][][][]\n";
+    if (print_test_separators)
+        PRNT << "[][][][][][][][][][][][][][][][][][][][][][]\n";
+
     int i_max = singleton_->list_.count ();
     int i_success = 0;
     for (int i = 0; i < i_max; ++i) {
@@ -150,8 +219,10 @@ int Manager::execAll()
         } else {
             PRNT << "     failed\n";
         }
+
+        if (print_test_separators)
+            PRNT << "[][][][][][][][][][][][][][][][][][][][][][]\n";
     }
-    PRNT << "[][][][][][][][][][][][][][][][][][][][][][]\n";
     return i_max - i_success;
 }
 /* ========================================================================= */

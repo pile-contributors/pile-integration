@@ -119,6 +119,22 @@ public:
     processEnds (
             Process * proc);
 
+
+    //! Get the active flags.
+    static int
+    flags () {
+        autocreate ();
+        return singleton_->flags_;
+    }
+
+    //! Set active flags.
+    static void
+    setFlags (
+            int value) {
+        autocreate ();
+        singleton_->flags_ = value;
+    }
+
 private:
 
     //! Start-up.
@@ -133,7 +149,7 @@ private:
 
     static Manager * singleton_;
 
-}; // class Process
+}; // class Manager
 
 } // namespace intest
 
