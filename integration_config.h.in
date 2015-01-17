@@ -8,8 +8,8 @@
 */
 /* ------------------------------------------------------------------------- */
 /* ========================================================================= */
-#ifndef PROWIZ_INTEGRATION_TEST_config_h_INCLUDE
-#define PROWIZ_INTEGRATION_TEST_config_h_INCLUDE
+#ifndef PILE_INTEGRATION_TEST_config_h_INCLUDE
+#define PILE_INTEGRATION_TEST_config_h_INCLUDE
 
 //
 //
@@ -28,7 +28,162 @@ extern "C" {
 //
 /*  DEFINITIONS    --------------------------------------------------------- */
 
-#define PROWIZ_EXE "@PROWIZ_EXE@"
+
+//! Used for QCoreApplication::setOrganizationName ()
+#define PILE_INTEGRATION_ORGANIZATION "@PILE_INTEGRATION_ORGANIZATION@"
+
+//! Used for QCoreApplication::setOrganizationDomain ()
+#define PILE_INTEGRATION_DOMAIN "@PILE_INTEGRATION_DOMAIN@"
+
+//! Used for QCoreApplication::setApplicationName ()
+#define PILE_INTEGRATION_APPNAME "@PILE_INTEGRATION_APPNAME@"
+
+
+//! Path where executables are usually generated
+#define EXECUTABLE_OUTPUT_PATH "@EXECUTABLE_OUTPUT_PATH@"
+
+//! Path where headers are usually generated
+#define INCLUDE_OUTPUT_PATH "@INCLUDE_OUTPUT_PATH@"
+
+//! Path where libraries are usually generated
+#define LIBRARY_OUTPUT_PATH "@LIBRARY_OUTPUT_PATH@"
+
+
+//! Current source path
+#define SOURCE_PATH "@CMAKE_CURRENT_SOURCE_DIR@"
+
+//! Current binary path
+#define BINARY_PATH "@CMAKE_CURRENT_SOURCE_DIR@"
+
+
+//! Project source path
+#define PROJECT_SOURCE_DIR "@PROJECT_SOURCE_DIR@"
+
+//! Project binary path
+#define PROJECT_BINARY_DIR "@PROJECT_BINARY_DIR@"
+
+
+//! Debug suffix applied
+#define DEBUG_POSTFIX "@CMAKE_DEBUG_POSTFIX@"
+
+
+// -------------------------------------------------
+/** @name Executables
+ *  This is a simple way of transmitting executables
+ * names inside source code.
+ */
+///@{
+
+#define EXE_NAME "@EXE_NAME_00@"
+#define EXE_NAME_00 "@EXE_NAME_00@"
+#define EXE_NAME_01 "@EXE_NAME_01@"
+#define EXE_NAME_02 "@EXE_NAME_02@"
+#define EXE_NAME_03 "@EXE_NAME_03@"
+#define EXE_NAME_04 "@EXE_NAME_04@"
+#define EXE_NAME_05 "@EXE_NAME_05@"
+#define EXE_NAME_06 "@EXE_NAME_06@"
+#define EXE_NAME_07 "@EXE_NAME_07@"
+#define EXE_NAME_08 "@EXE_NAME_08@"
+#define EXE_NAME_09 "@EXE_NAME_09@"
+#define EXE_NAME_10 "@EXE_NAME_10@"
+#define EXE_NAME_11 "@EXE_NAME_11@"
+#define EXE_NAME_12 "@EXE_NAME_12@"
+#define EXE_NAME_13 "@EXE_NAME_13@"
+#define EXE_NAME_14 "@EXE_NAME_14@"
+#define EXE_NAME_15 "@EXE_NAME_15@"
+#define EXE_NAME_16 "@EXE_NAME_16@"
+#define EXE_NAME_17 "@EXE_NAME_17@"
+#define EXE_NAME_18 "@EXE_NAME_18@"
+#define EXE_NAME_19 "@EXE_NAME_19@"
+#define EXE_NAME_20 "@EXE_NAME_20@"
+
+#ifndef EXE_NAME_@EXE_00@
+#define EXE_NAME_@EXE_00@ "@EXE_NAME_00@"
+#endif
+
+#ifndef EXE_NAME_@EXE_01@
+#define EXE_NAME_@EXE_01@ "@EXE_NAME_01@"
+#endif
+
+#ifndef EXE_NAME_@EXE_02@
+#define EXE_NAME_@EXE_02@ "@EXE_NAME_02@"
+#endif
+
+#ifndef EXE_NAME_@EXE_03@
+#define EXE_NAME_@EXE_03@ "@EXE_NAME_03@"
+#endif
+
+#ifndef EXE_NAME_@EXE_04@
+#define EXE_NAME_@EXE_04@ "@EXE_NAME_04@"
+#endif
+
+#ifndef EXE_NAME_@EXE_05@
+#define EXE_NAME_@EXE_05@ "@EXE_NAME_05@"
+#endif
+
+#ifndef EXE_NAME_@EXE_06@
+#define EXE_NAME_@EXE_06@ "@EXE_NAME_06@"
+#endif
+
+#ifndef EXE_NAME_@EXE_07@
+#define EXE_NAME_@EXE_07@ "@EXE_NAME_07@"
+#endif
+
+#ifndef EXE_NAME_@EXE_08@
+#define EXE_NAME_@EXE_08@ "@EXE_NAME_08@"
+#endif
+
+#ifndef EXE_NAME_@EXE_09@
+#define EXE_NAME_@EXE_09@ "@EXE_NAME_09@"
+#endif
+
+#ifndef EXE_NAME_@EXE_10@
+#define EXE_NAME_@EXE_10@ "@EXE_NAME_10@"
+#endif
+
+#ifndef EXE_NAME_@EXE_11@
+#define EXE_NAME_@EXE_11@ "@EXE_NAME_11@"
+#endif
+
+#ifndef EXE_NAME_@EXE_12@
+#define EXE_NAME_@EXE_12@ "@EXE_NAME_12@"
+#endif
+
+#ifndef EXE_NAME_@EXE_13@
+#define EXE_NAME_@EXE_13@ "@EXE_NAME_13@"
+#endif
+
+#ifndef EXE_NAME_@EXE_14@
+#define EXE_NAME_@EXE_14@ "@EXE_NAME_14@"
+#endif
+
+#ifndef EXE_NAME_@EXE_15@
+#define EXE_NAME_@EXE_15@ "@EXE_NAME_15@"
+#endif
+
+#ifndef EXE_NAME_@EXE_16@
+#define EXE_NAME_@EXE_16@ "@EXE_NAME_16@"
+#endif
+
+#ifndef EXE_NAME_@EXE_17@
+#define EXE_NAME_@EXE_17@ "@EXE_NAME_17@"
+#endif
+
+#ifndef EXE_NAME_@EXE_18@
+#define EXE_NAME_@EXE_18@ "@EXE_NAME_18@"
+#endif
+
+#ifndef EXE_NAME_@EXE_19@
+#define EXE_NAME_@EXE_19@ "@EXE_NAME_19@"
+#endif
+
+#ifndef EXE_NAME_@EXE_20@
+#define EXE_NAME_@EXE_20@ "@EXE_NAME_20@"
+#endif
+
+///@}
+// -------------------------------------------------
+
 
 /*  DEFINITIONS    ========================================================= */
 //
@@ -54,4 +209,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* PROWIZ_INTEGRATION_TEST_config_h_INCLUDE */
+#endif /* PILE_INTEGRATION_TEST_config_h_INCLUDE */

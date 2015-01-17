@@ -8,8 +8,8 @@
 */
 /* ------------------------------------------------------------------------- */
 /* ========================================================================= */
-#ifndef PROWIZ_INTEGRATION_TEST_INCLUDE
-#define PROWIZ_INTEGRATION_TEST_INCLUDE
+#ifndef PILE_INTEGRATION_TEST_INCLUDE
+#define PILE_INTEGRATION_TEST_INCLUDE
 
 //
 //
@@ -18,10 +18,13 @@
 /*  INCLUDES    ------------------------------------------------------------ */
 
 #include "integration_config.h"
+#include "inprocess.h"
+#include "inmanager.h"
 
 #include <QList>
 #include <QProcess>
 #include <QDateTime>
+
 
 
 /*  INCLUDES    ============================================================ */
@@ -112,4 +115,4 @@ public:
 //
 /* ------------------------------------------------------------------------- */
 /* ========================================================================= */
-#endif /* PROWIZ_INTEGRATION_TEST_INCLUDE */
+#endif /* PILE_INTEGRATION_TEST_INCLUDE */

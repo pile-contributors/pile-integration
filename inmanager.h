@@ -8,8 +8,8 @@
 */
 /* ------------------------------------------------------------------------- */
 /* ========================================================================= */
-#ifndef PROWIZ_INTEGRATION_MANAGER_INCLUDE
-#define PROWIZ_INTEGRATION_MANAGER_INCLUDE
+#ifndef PILE_INTEGRATION_MANAGER_INCLUDE
+#define PILE_INTEGRATION_MANAGER_INCLUDE
 
 //
 //
@@ -144,4 +144,4 @@ private:
 //
 /* ------------------------------------------------------------------------- */
 /* ========================================================================= */
-#endif /* PROWIZ_INTEGRATION_MANAGER_INCLUDE */
+#endif /* PILE_INTEGRATION_MANAGER_INCLUDE */

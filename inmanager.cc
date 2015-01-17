@@ -52,9 +52,9 @@ Manager * Manager::singleton_ = NULL;
 int			main				(int argc, char *argv[])
 {
     QCoreApplication app (argc, argv);
-    QCoreApplication::setOrganizationName("ProWiz");
-    QCoreApplication::setOrganizationDomain("prowiz.com");
-    QCoreApplication::setApplicationName("prowizintest");
+    QCoreApplication::setOrganizationName (PILE_INTEGRATION_ORGANIZATION);
+    QCoreApplication::setOrganizationDomain (PILE_INTEGRATION_DOMAIN);
+    QCoreApplication::setApplicationName (PILE_INTEGRATION_APPNAME);
 
     int result = Manager::execAll ();
     Manager::end ();
