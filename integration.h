@@ -311,7 +311,8 @@
  */
 #define ASSERT_TRUE(condition) \
     if (!evaluateBoolean(condition, FATAL, \
-        "ASSERT_TRUE (" STRINGIFY(condition) ")", __FILE__, __LINE__)
+        "ASSERT_TRUE (" STRINGIFY(condition) ")", __FILE__, __LINE__)) \
+    goto end_of_intest;
 
 
 /**
@@ -319,8 +320,9 @@
  * @brief Performs a boolean test; the execution breaks if the test fails.
  */
 #define ASSERT_FALSE(condition)  \
-    evaluateBoolean(!(condition), FATAL, \
-        "ASSERT_FALSE (" STRINGIFY(condition) ")", __FILE__, __LINE__)
+    if (!evaluateBoolean(!(condition), FATAL, \
+        "ASSERT_FALSE (" STRINGIFY(condition) ")", __FILE__, __LINE__)) \
+    goto end_of_intest;
 
 
 /**
@@ -328,8 +330,10 @@
  * @brief Performs a boolean test; the execution breaks if the test fails.
  */
 #define ASSERT_EQ(value_1, value_2)  \
-    evaluateBoolean((value_1) == (value_2), FATAL, \
-        "ASSERT_EQ (" STRINGIFY(value_1) "," STRINGIFY(value_2) ")", __FILE__, __LINE__)
+    if (!evaluateBoolean((value_1) == (value_2), FATAL, \
+        "ASSERT_EQ (" STRINGIFY(value_1) "," STRINGIFY(value_2) ")", \
+        __FILE__, __LINE__)) \
+    goto end_of_intest;
 
 
 /**
@@ -337,9 +341,10 @@
  * @brief Performs a boolean test; the execution breaks if the test fails.
  */
 #define ASSERT_NE(value_1, value_2)  \
-    evaluateBoolean((value_1) != (value_2), FATAL, \
-        "ASSERT_NE (" STRINGIFY(value_1) "," STRINGIFY(value_2) ")", __FILE__, __LINE__)
-
+    if (!evaluateBoolean((value_1) != (value_2), FATAL, \
+        "ASSERT_NE (" STRINGIFY(value_1) "," STRINGIFY(value_2) ")", \
+        __FILE__, __LINE__)) \
+    goto end_of_intest;
 
 
 /**
@@ -347,9 +352,10 @@
  * @brief Searches the string for the pattern; the execution breaks if the test fails.
  */
 #define ASSERT_REGEX(__pattern__, __value__)  \
-    evaluateBoolean(REGEX_MATCH(__pattern__, __value__), FATAL, \
+    if (!evaluateBoolean(REGEX_MATCH(__pattern__, __value__), FATAL, \
         "ASSERT_REGEX (" STRINGIFY(__pattern__) "," STRINGIFY(__value__) ")", \
-        __FILE__, __LINE__)
+        __FILE__, __LINE__)) \
+    goto end_of_intest;
 
 
 /**
@@ -357,9 +363,10 @@
  * @brief Searches the string for the pattern; the execution breaks if the test fails.
  */
 #define ASSERT_NREGEX(__pattern__, __value__)  \
-    evaluateBoolean(!REGEX_MATCH(__pattern__, __value__), FATAL, \
+    if (!evaluateBoolean(!REGEX_MATCH(__pattern__, __value__), FATAL, \
         "ASSERT_NREGEX (" STRINGIFY(__pattern__) "," STRINGIFY(__value__) ")", \
-        __FILE__, __LINE__)
+        __FILE__, __LINE__)) \
+    goto end_of_intest;
 
 
 #endif // EXPECT_TRUE
