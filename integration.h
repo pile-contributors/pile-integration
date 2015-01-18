@@ -21,6 +21,8 @@
 #include "inprocess.h"
 #include "inmanager.h"
 
+#include <stdio.h>
+
 #include <QList>
 #include <QProcess>
 #include <QDateTime>
@@ -341,6 +343,25 @@
 
 
 namespace intest {
+
+    /** @name Color codes
+     * Used to generate nice colored output in terminal.
+     */
+    ///@{
+
+    enum Color {
+        COLOR_RED = 0,
+        COLOR_GREEN,
+        COLOR_YELLOW,
+        COLOR_BLUE,
+        COLOR_MAGENTA,
+        COLOR_CYAN,
+        COLOR_GREY,
+        COLOR_RESET
+    };
+
+    ///@}
+
     class Process;
     class Manager;
 }

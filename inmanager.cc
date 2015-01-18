@@ -20,6 +20,13 @@
 
 #include <QCoreApplication>
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef PILE_INTEGRATION_WIN32
+#include <windows.h>
+#endif // PILE_INTEGRATION_WIN32
+
 /*  INCLUDES    ============================================================ */
 //
 //
@@ -28,6 +35,43 @@
 /*  DEFINITIONS    --------------------------------------------------------- */
 
 using namespace intest;
+
+#ifdef PILE_INTEGRATION_WIN32
+
+enum ConsoleColor {
+    WINCC_BLACK = 0x0,
+    WINCC_GRAY = 0x8,
+    WINCC_BLUE = 0x1,
+    WINCC_LIGHT_BLUE = 0x9,
+    WINCC_GREEN = 0x2,
+    WINCC_LIGHT_GREEN = 0xA,
+    WINCC_AQUA = 0x3,
+    WINCC_LIGHT_AQUA = 0xB,
+    WINCC_RED = 0x4,
+    WINCC_LIGHT_RED = 0xC,
+    WINCC_PURPLE = 0x5,
+    WINCC_LIGHT_PURPLE = 0xD,
+    WINCC_YELLOW = 0x6,
+    WINCC_LIGHT_YELLOW = 0xE,
+    WINCC_WHITE = 0x7,
+    WINCC_BRIGHT_WHITE = 0xF,
+};
+
+#define WINCC_COLOR(__back__, __foreg__) ((__back__ << 8) | __foreg__)
+
+#else
+
+#define PINT_COLOR_RED     "\x1b[31m"
+#define PINT_COLOR_GREEN   "\x1b[32m"
+#define PINT_COLOR_YELLOW  "\x1b[33m"
+#define PINT_COLOR_BLUE    "\x1b[34m"
+#define PINT_COLOR_MAGENTA "\x1b[35m"
+#define PINT_COLOR_CYAN    "\x1b[36m"
+#define PINT_COLOR_GREY    "\x1b[37m"
+#define PINT_COLOR_RESET   "\x1b[0m"
+
+#endif // PILE_INTEGRATION_WIN32
+
 
 /*  DEFINITIONS    ========================================================= */
 //
@@ -38,12 +82,34 @@ using namespace intest;
 
 Manager * Manager::singleton_ = NULL;
 
-static QString s_print_option ("--print:");
-static QString s_hide_option  ("--hide:");
-static QString s_exclude_option ("--exclude:");
-static QString s_only_option  ("--only:");
+#ifdef PILE_INTEGRATION_WIN32
 
-static bool print_test_separators = false;
+int color_mapping[] = {
+    WINCC_COLOR(WINCC_BLACK, WINCC_RED),
+    WINCC_COLOR(WINCC_BLACK, WINCC_GREEN),
+    WINCC_COLOR(WINCC_BLACK, WINCC_YELLOW),
+    WINCC_COLOR(WINCC_BLACK, WINCC_BLUE),
+    WINCC_COLOR(WINCC_BLACK, WINCC_PURPLE),
+    WINCC_COLOR(WINCC_BLACK, WINCC_LIGHT_AQUA),
+    WINCC_COLOR(WINCC_BLACK, WINCC_WHITE),
+    WINCC_COLOR(WINCC_BLACK, WINCC_BRIGHT_WHITE)
+};
+
+#else // PILE_INTEGRATION_WIN32
+
+const char * color_mapping[] = {
+    PINT_COLOR_RED,
+    PINT_COLOR_GREEN,
+    PINT_COLOR_YELLOW,
+    PINT_COLOR_BLUE,
+    PINT_COLOR_MAGENTA,
+    PINT_COLOR_CYAN,
+    PINT_COLOR_GREY,
+    PINT_COLOR_RESET
+};
+
+#endif // PILE_INTEGRATION_WIN32
+
 
 /*  DATA    ================================================================ */
 //
@@ -53,178 +119,14 @@ static bool print_test_separators = false;
 /*  FUNCTIONS    ----------------------------------------------------------- */
 
 /* ------------------------------------------------------------------------- */
-void terminate_with_error (int error_code)
-{
-    Manager::end ();
-    exit (error_code);
-}
-/* ========================================================================= */
-
-/* ------------------------------------------------------------------------- */
-void prcess_print_arguments (const QString & arg)
-{
-    // example: --print:std_err
-    // example: --print:separators
-    // example: --print:command_line,error_code_list,exit_code,exit_stat,status_list,std_all,std_err,std_out,time
-    int print_flags = intest::Manager::flags ();
-    QStringList sl_print =
-            arg.mid (s_print_option.length ())
-               .toLower ().split (",");
-    foreach(const QString & s_print_arg, sl_print) {
-        if (s_print_arg == "all") {
-            print_flags = intest::ALL_FLAGS;
-        } else if (s_print_arg == "std_out") {
-            print_flags = print_flags | intest::PRINT_STD_OUT;
-        } else if (s_print_arg == "std_err") {
-            print_flags = print_flags | intest::PRINT_STD_ERR;
-        } else if (s_print_arg == "std_all") {
-            print_flags = print_flags | intest::PRINT_STD_ALL;
-        } else if (s_print_arg == "exit_code") {
-            print_flags = print_flags | intest::PRINT_EXIT_CODE;
-        } else if (s_print_arg == "exit_stat") {
-            print_flags = print_flags | intest::PRINT_EXIT_STAT;
-        } else if (s_print_arg == "time") {
-            print_flags = print_flags | intest::PRINT_TIME;
-        } else if (s_print_arg == "command_line") {
-            print_flags = print_flags | intest::PRINT_COMMAND_LINE;
-        } else if (s_print_arg == "error_code_list") {
-            print_flags = print_flags | intest::PRINT_ERROR_CODE_LIST;
-        } else if (s_print_arg == "status_list") {
-            print_flags = print_flags | intest::PRINT_STATUS_LIST;
-        } else if (s_print_arg == "separators") {
-            print_test_separators = true;
-        } else {
-            intest::Manager::printLn (
-                        QString("Invalid argument to --print: %1")
-                        .arg (s_print_arg));
-            terminate_with_error (-1);
-        }
-    }
-    intest::Manager::setFlags (print_flags);
-}
-/* ========================================================================= */
-
-/* ------------------------------------------------------------------------- */
-void prcess_exclude_arguments (const QString & arg)
-{
-    QStringList sl_exclude =
-            arg.mid (s_exclude_option.length ())
-               .toLower ().split (",");
-
-    foreach (const QString & s_one_arg, sl_exclude) {
-        Manager::excludeTest (s_one_arg);
-    }
-
-}
-/* ========================================================================= */
-
-/* ------------------------------------------------------------------------- */
-void prcess_only_arguments (const QString & arg)
-{
-    QStringList sl_only =
-            arg.mid (s_only_option.length ())
-               .toLower ().split (",");
-
-    foreach (const QString & s_one_arg, sl_only) {
-        Manager::addSpecificTest (s_one_arg);
-    }
-
-}
-/* ========================================================================= */
-
-/* ------------------------------------------------------------------------- */
-void prcess_hide_arguments (const QString & arg)
-{
-    // example: --hide:std_err
-    // example: --hide:separators
-    // example: --hide:command_line,error_code_list,exit_code,exit_stat,status_list,std_all,std_err,std_out,time
-    int print_flags = intest::Manager::flags ();
-    QStringList sl_hide =
-            arg.mid (s_hide_option.length ())
-               .toLower ().split (",");
-    foreach(const QString & s_hide_arg, sl_hide) {
-        if (s_hide_arg == "all") {
-            print_flags = intest::NO_FLAG;
-        } else if (s_hide_arg == "std_out") {
-            print_flags = print_flags & ~intest::PRINT_STD_OUT;
-        } else if (s_hide_arg == "std_err") {
-            print_flags = print_flags & ~intest::PRINT_STD_ERR;
-        } else if (s_hide_arg == "std_all") {
-            print_flags = print_flags & ~intest::PRINT_STD_ALL;
-        } else if (s_hide_arg == "exit_code") {
-            print_flags = print_flags & ~intest::PRINT_EXIT_CODE;
-        } else if (s_hide_arg == "exit_stat") {
-            print_flags = print_flags & ~intest::PRINT_EXIT_STAT;
-        } else if (s_hide_arg == "time") {
-            print_flags = print_flags & ~intest::PRINT_TIME;
-        } else if (s_hide_arg == "command_line") {
-            print_flags = print_flags & ~intest::PRINT_COMMAND_LINE;
-        } else if (s_hide_arg == "error_code_list") {
-            print_flags = print_flags & ~intest::PRINT_ERROR_CODE_LIST;
-        } else if (s_hide_arg == "status_list") {
-            print_flags = print_flags & ~intest::PRINT_STATUS_LIST;
-        } else if (s_hide_arg == "separators") {
-            print_test_separators = false;
-        } else {
-            intest::Manager::printLn (
-                        QString("Invalid argument to --hide: %1")
-                        .arg (s_hide_arg));
-            terminate_with_error (-1);
-        }
-    }
-    intest::Manager::setFlags (print_flags);
-}
-/* ========================================================================= */
-
-/* ------------------------------------------------------------------------- */
-int			main				(int argc, char *argv[])
-{
-    QCoreApplication app (argc, argv);
-    bool b_first = true;
-    foreach(const QString & arg, QCoreApplication::arguments ()) {
-        if (b_first) {
-            b_first = false;
-        } else if (arg.startsWith (s_print_option)) {
-            prcess_print_arguments (arg);
-        } else if (arg.startsWith (s_hide_option)) {
-            prcess_hide_arguments (arg);
-
-        } else if (arg.startsWith (s_exclude_option)) {
-            prcess_exclude_arguments (arg);
-        } else if (arg.startsWith (s_only_option)) {
-            prcess_only_arguments (arg);
-
-        } else if (arg.startsWith ("-")) {
-            intest::Manager::printLn (
-                        QString("Invalid argument: %1")
-                        .arg (arg));
-            terminate_with_error (-1);
-        } else {
-            Manager::addSpecificTest (arg);
-        }
-    }
-
-    QCoreApplication::setOrganizationName (PILE_INTEGRATION_ORGANIZATION);
-    QCoreApplication::setOrganizationDomain (PILE_INTEGRATION_DOMAIN);
-    QCoreApplication::setApplicationName (PILE_INTEGRATION_APPNAME);
-
-    int result = Manager::execAll ();
-    Manager::end ();
-    app.quit ();
-    return result;
-}
-/* ========================================================================= */
-
-/* ------------------------------------------------------------------------- */
 Manager::Manager() :
     list_(),
     fstdout_(new QFile()),
     d_(NULL),
-    flags_(PRINT_FAILED),
+    flags_(PRINT_FAILED | PRINT_COLORS),
     sl_exclusion_(),
     sl_inclusion_()
 {
-
     singleton_ = this;
     if (!fstdout_->open (stdout, QIODevice::WriteOnly)) {
         qDebug() << fstdout_->errorString ();
@@ -233,7 +135,6 @@ Manager::Manager() :
         d_ = new QDebug(fstdout_);
     }
     d_->noquote ().nospace ();
-
 }
 /* ========================================================================= */
 
@@ -288,9 +189,7 @@ void Manager::add (Integration * value)
 int Manager::execAll()
 {
     autocreate ();
-
-    if (print_test_separators)
-        PRNT << "[][][][][][][][][][][][][][][][][][][][][][]\n";
+    endColor ();
 
     int i_max = singleton_->list_.count ();
     int i_complete_success = 0;
@@ -310,7 +209,9 @@ int Manager::execAll()
                 continue;
         }
 
+        Manager::startColor (COLOR_CYAN);
         PRNT << "\nTest case " << i+1 << ": " << instance_name << "\n";
+        Manager::endColor ();
 
         // execute this test case
         /*int result = */ instance->exec ();
@@ -324,17 +225,31 @@ int Manager::execAll()
         i_complete_success += instance->failed () == 0 ? 1 : 0;
 
         // and show nice separators
-        if (print_test_separators)
+        if (Manager::hasFlag (PRINT_SEPARATORS)) {
+            Manager::startColor (COLOR_GREY);
             PRNT << "[][][][][][][][][][][][][][][][][][][][][][]\n";
+            PRNT << "============================================\n";
+            Manager::endColor ();
+        }
 
         ++i_performed;
     }
 
     // Print a global result of all the tests in this program.
     PRNT << "\n"
-         << i_performed << " test cases with "
-         << i_success   << " successful and "
-         << i_failure   << " failed tests\n";
+         << i_performed << " test cases with ";
+
+    if (i_success > 0) Manager::startColor (COLOR_GREEN);
+    PRNT << i_success   << " successful";
+    if (i_success > 0) Manager::endColor ();
+
+    PRNT << " and ";
+
+    if (i_failure > 0) Manager::startColor (COLOR_RED);
+    PRNT << i_failure   << " failed";
+    if (i_failure > 0) Manager::endColor ();
+
+    PRNT << " tests\n";
 
     return i_max - i_complete_success;
 }
@@ -357,6 +272,7 @@ void Manager::printLn (const QString & s_value)
 /* ------------------------------------------------------------------------- */
 void Manager::processStarts (Process * proc)
 {
+    Manager::startColor (COLOR_CYAN);
     if ((singleton_->flags_ & PRINT_COMMAND_LINE) != 0) {
         PRNT << "    program: " << proc->program () << "\n";
         QStringList args = proc->arguments ();
@@ -374,12 +290,14 @@ void Manager::processStarts (Process * proc)
             PRNT << "\n";
         }
     }
+    Manager::endColor ();
 }
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
 void Manager::processEnds (Process * proc)
 {
+    Manager::startColor (COLOR_GREY);
     if ((singleton_->flags_ & PRINT_STD_ALL) != 0) {
         if (proc->all_output_.isEmpty ()) {
             PRNT << "    (no output)\n";
@@ -464,8 +382,49 @@ void Manager::processEnds (Process * proc)
             PRNT << "\n";
         }
     }
+    Manager::endColor ();
+}
+/* ========================================================================= */
 
+/* ------------------------------------------------------------------------- */
+void Manager::startColor (intest::Color color)
+{
+    if (hasFlag (PRINT_COLORS)) {
+        delete singleton_->d_;
+        singleton_->fstdout_->flush ();
+        singleton_->d_ = new QDebug(singleton_->fstdout_);
+        singleton_->d_->noquote ().nospace ();
+#ifdef PILE_INTEGRATION_WIN32
+        HANDLE  hConsole;
+        hConsole = GetStdHandle (STD_OUTPUT_HANDLE);
+        SetConsoleTextAttribute (hConsole, color_mapping[color]);
+        hConsole = GetStdHandle (STD_ERROR_HANDLE);
+        SetConsoleTextAttribute (hConsole, color_mapping[color]);
+#else // PILE_INTEGRATION_WIN32
+        PRNT << color_mapping[color];
+#endif // PILE_INTEGRATION_WIN32
+    }
+}
+/* ========================================================================= */
 
+/* ------------------------------------------------------------------------- */
+void Manager::endColor ()
+{
+    if (hasFlag (PRINT_COLORS)) {
+        delete singleton_->d_;
+        singleton_->fstdout_->flush ();
+        singleton_->d_ = new QDebug(singleton_->fstdout_);
+        singleton_->d_->noquote ().nospace ();
+#ifdef PILE_INTEGRATION_WIN32
+        HANDLE  hConsole;
+        hConsole = GetStdHandle (STD_OUTPUT_HANDLE);
+        SetConsoleTextAttribute (hConsole, color_mapping[COLOR_RESET]);
+        hConsole = GetStdHandle (STD_ERROR_HANDLE);
+        SetConsoleTextAttribute (hConsole, color_mapping[COLOR_RESET]);
+#else // PILE_INTEGRATION_WIN32
+        PRNT << COLOR_RESET;
+#endif // PILE_INTEGRATION_WIN32
+    }
 }
 /* ========================================================================= */
 

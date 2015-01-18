@@ -37,6 +37,7 @@
 namespace intest {
     class Integration;
     class Process;
+    enum Color;
 }
 /*  DEFINITIONS    ========================================================= */
 //
@@ -70,11 +71,14 @@ enum Flags {
     PRINT_SUCCESSFUL    = 0x00000200,
     PRINT_FAILED        = 0x00000400,
 
+    PRINT_COLORS        = 0x00000800,
+    PRINT_SEPARATORS    = 0x00000800,
+
     ALL_FLAGS =
         PRINT_STD_OUT | PRINT_STD_ERR |
         PRINT_EXIT_CODE | PRINT_EXIT_STAT | PRINT_TIME |
         PRINT_COMMAND_LINE | PRINT_ERROR_CODE_LIST | PRINT_STATUS_LIST |
-        PRINT_SUCCESSFUL | PRINT_FAILED
+        PRINT_SUCCESSFUL | PRINT_FAILED | PRINT_COLORS
 };
 
 class Manager {
@@ -175,6 +179,15 @@ public:
             const QString & s_value) {
         singleton_->sl_inclusion_.append (s_value);
     }
+
+    //! Starts printing with a color.
+    static void
+    startColor (
+            intest::Color color);
+
+    //! Resets printing with color.
+    static void
+    endColor ();
 
 private:
 

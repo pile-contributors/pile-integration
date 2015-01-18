@@ -94,23 +94,34 @@ bool Integration::evaluateBoolean(
     s_sondition_s.replace (STRINGIFY(MILI_DURATION), "MILI_DURATION");
     s_sondition_s.replace (STRINGIFY(EXIT_CODE), "EXIT_CODE");
     s_sondition_s.replace (STRINGIFY(EXIT_STATUS), "EXIT_STATUS");
+    s_sondition_s.replace ("\" \"", "");
 
     if (condition) {
         ++successful_tests_;
 
         if (intest::Manager::hasFlag (PRINT_SUCCESSFUL)) {
+            Manager::startColor (COLOR_GREEN);
             PRNT << file
-                 << "(" << line << ") : succes\n    "
-                 << s_sondition_s << "\n";
+                 << "(" << line << ") : succes\n";
+            Manager::endColor ();
+
+            Manager::startColor (COLOR_GREY);
+            PRNT << "    " << s_sondition_s << "\n";
+            Manager::endColor ();
         }
 
     } else {
         ++failed_tests_;
 
         if (intest::Manager::hasFlag (PRINT_FAILED)) {
+            Manager::startColor (COLOR_RED);
             PRNT << file
-                 << "(" << line << ") : failure\n    "
-                 << s_sondition_s << "\n";
+                 << "(" << line << ") : failure\n";
+            Manager::endColor ();
+
+            Manager::startColor (COLOR_GREY);
+            PRNT << "    " << s_sondition_s << "\n";
+            Manager::endColor ();
         }
     }
 
@@ -123,22 +134,30 @@ void Integration::printResults() const
 {
     if (successful() == 0) {
         if (failed() == 0) {
+            Manager::startColor (COLOR_GREEN);
             PRNT << "     no tests\n";
         } else {
+            Manager::startColor (COLOR_RED);
             PRNT << "     "
                  << failed()
                  << " failed\n";
         }
+        Manager::endColor ();
     } else if (failed() == 0) {
+        Manager::startColor (COLOR_GREEN);
         PRNT << "     "
              << successful()
              << " successful\n";
+        Manager::endColor ();
     } else {
+        Manager::startColor (COLOR_GREEN);
         PRNT << "     "
              << successful()
-             << " succesful "
-             << failed()
+             << " succesful ";
+        Manager::startColor (COLOR_RED);
+        PRNT << failed()
              << " failed\n";
+        Manager::endColor ();
     }
 }
 /* ========================================================================= */

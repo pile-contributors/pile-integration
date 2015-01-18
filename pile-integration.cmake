@@ -25,11 +25,13 @@
 # The list of elements in this directory
 
 set( PILE_INTEGRATION_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/inapplication.cc
     ${CMAKE_CURRENT_LIST_DIR}/integration.cc
     ${CMAKE_CURRENT_LIST_DIR}/inmanager.cc
     ${CMAKE_CURRENT_LIST_DIR}/inprocess.cc)
 	
 set( PILE_INTEGRATION_HEADERS
+    ${CMAKE_CURRENT_LIST_DIR}/inapplication.h
     ${CMAKE_CURRENT_LIST_DIR}/integration.h
     ${CMAKE_CURRENT_LIST_DIR}/inmanager.h
     ${CMAKE_CURRENT_LIST_DIR}/inprocess.h)
@@ -38,6 +40,12 @@ set( PILE_INTEGRATION_QT_MODS
     Core)
 
 include_directories("${CMAKE_CURRENT_LIST_DIR}")
+
+if (WIN32)
+    set (PILE_INTEGRATION_WIN32 ON)
+else ()
+    set (PILE_INTEGRATION_WIN32 OFF)
+endif()
 
 # ============================================================================
 

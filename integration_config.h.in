@@ -28,6 +28,8 @@ extern "C" {
 //
 /*  DEFINITIONS    --------------------------------------------------------- */
 
+//! Our own way of knowing if this is a Win32 app
+#cmakedefine PILE_INTEGRATION_WIN32
 
 //! Used for QCoreApplication::setOrganizationName ()
 #define PILE_INTEGRATION_ORGANIZATION "@PILE_INTEGRATION_ORGANIZATION@"
