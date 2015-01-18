@@ -159,6 +159,20 @@
 
 
 /**
+ * @def EXIT_CODE
+ * @brief The exit code (integer) returned by tested program.
+ */
+#define EXIT_CODE (proc->exitCode ())
+
+
+/**
+ * @def EXIT_STATUS
+ * @brief Exit status may be either QProcess::NormalExit or QProcess::CrashExit.
+ */
+#define EXIT_STATUS (proc->exitStatus ())
+
+
+/**
  * @def HAS_ERROR(__value__)
  * @brief Tell if a QProcess::ProcessError occured.
  */

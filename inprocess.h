@@ -73,7 +73,6 @@ public:
     }
 
 
-
 private slots:
     void errorSlot (QProcess::ProcessError error);
     void finishedSlot (int exitCode, QProcess::ExitStatus exitStatus);

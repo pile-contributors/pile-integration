@@ -85,11 +85,15 @@ bool Integration::evaluateBoolean(
         const char *file, int line)
 {
     QString s_sondition_s (s_condition);
+
+    // we do this in order to present a consistent view to the user
     s_sondition_s.replace (STRINGIFY(PROG_STD_ERR), "PROG_STD_ERR");
     s_sondition_s.replace (STRINGIFY(PROG_STD_OUT), "PROG_STD_OUT");
     s_sondition_s.replace (STRINGIFY(PROG_OUT), "PROG_OUT");
     s_sondition_s.replace (STRINGIFY(DURATION), "DURATION");
     s_sondition_s.replace (STRINGIFY(MILI_DURATION), "MILI_DURATION");
+    s_sondition_s.replace (STRINGIFY(EXIT_CODE), "EXIT_CODE");
+    s_sondition_s.replace (STRINGIFY(EXIT_STATUS), "EXIT_STATUS");
 
     if (condition) {
         ++successful_tests_;
