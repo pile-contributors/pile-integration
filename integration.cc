@@ -44,7 +44,9 @@ using namespace intest;
 /*  FUNCTIONS    ----------------------------------------------------------- */
 
 /* ------------------------------------------------------------------------- */
-Integration::Integration()
+Integration::Integration() :
+    successful_tests_ (0),
+    failed_tests_ (0)
 {
     Manager::add (this);
 }
@@ -74,6 +76,66 @@ Process * Integration::runMonitoredProcess (
     retp->perform (input);
 
     return retp;
+}
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+bool Integration::evaluateBoolean(
+        bool condition, bool /*fatal*/, const char * s_condition,
+        const char *file, int line)
+{
+    QString s_sondition_s (s_condition);
+    s_sondition_s.replace (STRINGIFY(PROG_STD_ERR), "PROG_STD_ERR");
+    s_sondition_s.replace (STRINGIFY(PROG_STD_OUT), "PROG_STD_OUT");
+    s_sondition_s.replace (STRINGIFY(PROG_OUT), "PROG_OUT");
+    s_sondition_s.replace (STRINGIFY(DURATION), "DURATION");
+    s_sondition_s.replace (STRINGIFY(MILI_DURATION), "MILI_DURATION");
+
+    if (condition) {
+        ++successful_tests_;
+
+        if (intest::Manager::hasFlag (PRINT_SUCCESSFUL)) {
+            PRNT << file
+                 << "(" << line << ") : succes\n    "
+                 << s_sondition_s << "\n";
+        }
+
+    } else {
+        ++failed_tests_;
+
+        if (intest::Manager::hasFlag (PRINT_FAILED)) {
+            PRNT << file
+                 << "(" << line << ") : failure\n    "
+                 << s_sondition_s << "\n";
+        }
+    }
+
+    return condition;
+}
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+void Integration::printResults() const
+{
+    if (successful() == 0) {
+        if (failed() == 0) {
+            PRNT << "     no tests\n";
+        } else {
+            PRNT << "     "
+                 << failed()
+                 << " failed\n";
+        }
+    } else if (failed() == 0) {
+        PRNT << "     "
+             << successful()
+             << " successful\n";
+    } else {
+        PRNT << "     "
+             << successful()
+             << " succesful "
+             << failed()
+             << " failed\n";
+    }
 }
 /* ========================================================================= */
 

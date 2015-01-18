@@ -64,6 +64,16 @@ public:
     void perform (
             const QStringList & input);
 
+    int durationInSeconds () {
+        return end_time_.secsTo (start_time_);
+    }
+
+    int durationInMiliSeconds () {
+        return end_time_.msecsTo (start_time_);
+    }
+
+
+
 private slots:
     void errorSlot (QProcess::ProcessError error);
     void finishedSlot (int exitCode, QProcess::ExitStatus exitStatus);

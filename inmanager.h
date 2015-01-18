@@ -24,6 +24,8 @@
 #include <QDateTime>
 #include <QFile>
 #include <QDebug>
+#include <QString>
+#include <QStringList>
 
 /*  INCLUDES    ============================================================ */
 //
@@ -53,21 +55,26 @@ namespace intest {
 namespace intest {
 
 enum Flags {
-    NO_FLAG = 0x00000000,
-    PRINT_STD_OUT = 0x00000001,
-    PRINT_STD_ERR = 0x00000002,
-    PRINT_STD_ALL = 0x00000004,
-    PRINT_EXIT_CODE = 0x00000008,
-    PRINT_EXIT_STAT = 0x00000010,
-    PRINT_TIME = 0x00000020,
-    PRINT_COMMAND_LINE = 0x00000040,
+    NO_FLAG             = 0x00000000,
+
+    PRINT_STD_OUT       = 0x00000001,
+    PRINT_STD_ERR       = 0x00000002,
+    PRINT_STD_ALL       = 0x00000004,
+    PRINT_EXIT_CODE     = 0x00000008,
+    PRINT_EXIT_STAT     = 0x00000010,
+    PRINT_TIME          = 0x00000020,
+    PRINT_COMMAND_LINE  = 0x00000040,
     PRINT_ERROR_CODE_LIST = 0x00000080,
-    PRINT_STATUS_LIST = 0x00000100,
+    PRINT_STATUS_LIST   = 0x00000100,
+
+    PRINT_SUCCESSFUL    = 0x00000200,
+    PRINT_FAILED        = 0x00000400,
 
     ALL_FLAGS =
         PRINT_STD_OUT | PRINT_STD_ERR |
         PRINT_EXIT_CODE | PRINT_EXIT_STAT | PRINT_TIME |
-        PRINT_COMMAND_LINE | PRINT_ERROR_CODE_LIST | PRINT_STATUS_LIST
+        PRINT_COMMAND_LINE | PRINT_ERROR_CODE_LIST | PRINT_STATUS_LIST |
+        PRINT_SUCCESSFUL | PRINT_FAILED
 };
 
 class Manager {
@@ -82,6 +89,12 @@ public:
 
 public:
 
+    //! The singleton.
+    static Manager *
+    singleton () {
+        return singleton_;
+    }
+
     //! Start-up.
     static void
     init ();
@@ -89,6 +102,12 @@ public:
     //! End-up.
     static void
     end ();
+
+    //! The printer.
+    static QDebug &
+    d () {
+        return *(singleton_->d_);
+    }
 
     //! Add an Integration instance.
     static void
@@ -119,6 +138,13 @@ public:
     processEnds (
             Process * proc);
 
+    //! Tell if a flag is set.
+    static bool
+    hasFlag (
+            int flag_value) {
+        autocreate ();
+        return (singleton_->flags_ & flag_value) == flag_value;
+    }
 
     //! Get the active flags.
     static int
@@ -135,6 +161,21 @@ public:
         singleton_->flags_ = value;
     }
 
+
+    //! Add a test case to the exclusion list.
+    static void
+    excludeTest (
+            const QString & s_value) {
+        singleton_->sl_exclusion_.append (s_value);
+    }
+
+    //! Add a specific test case to be executes.
+    static void
+    addSpecificTest (
+            const QString & s_value) {
+        singleton_->sl_inclusion_.append (s_value);
+    }
+
 private:
 
     //! Start-up.
@@ -146,6 +187,9 @@ private:
     QFile * fstdout_;
     QDebug * d_;
     int flags_;
+
+    QStringList sl_exclusion_;
+    QStringList sl_inclusion_;
 
     static Manager * singleton_;
 
