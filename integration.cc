@@ -19,6 +19,7 @@
 #include "inmanager.h"
 
 #include <QCoreApplication>
+#include <QTemporaryFile>
 
 /*  INCLUDES    ============================================================ */
 //
@@ -46,7 +47,8 @@ using namespace intest;
 /* ------------------------------------------------------------------------- */
 Integration::Integration() :
     successful_tests_ (0),
-    failed_tests_ (0)
+    failed_tests_ (0),
+    temp_files_()
 {
     Manager::add (this);
 }
@@ -55,6 +57,12 @@ Integration::Integration() :
 /* ------------------------------------------------------------------------- */
 Integration::~Integration()
 {
+    foreach (const QString & s, temp_files_) {
+        QFile f(s);
+        if (f.exists ()) {
+            f.remove ();
+        }
+    }
 }
 /* ========================================================================= */
 
@@ -159,6 +167,35 @@ void Integration::printResults() const
              << " failed\n";
         Manager::endColor ();
     }
+}
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+QString Integration::createTempFile (
+        const QString &extension, const QString &file_name)
+{
+    QString s_pattern = file_name + "XXXXXX";
+    if (!extension.isEmpty ()) {
+        if (extension.startsWith (QChar('.'))) {
+            s_pattern.append (extension);
+        } else {
+            s_pattern.append (QChar('.'));
+            s_pattern.append (extension);
+        }
+    }
+    return createTempFilePtrn (s_pattern);
+}
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+QString Integration::createTempFilePtrn (const QString & s_pattern)
+{
+    QString result;
+    QTemporaryFile tmp_f (s_pattern);
+    tmp_f.open ();
+    result = tmp_f.fileName ();
+    temp_files_.append (result);
+    return result;
 }
 /* ========================================================================= */
 

@@ -126,6 +126,29 @@
 
 
 /**
+ * @def TEMP_FILE
+ * @brief Get temporary file path; will be deleted at test end.
+ */
+#define TEMP_FILE (createTempFile ())
+
+
+/**
+ * @def TEMP_FILE_EX
+ * @brief Get temporary file path with a given extension; will be deleted at test end.
+ */
+#define TEMP_FILE_EX(__ex__) (createTempFile (__ex__))
+
+
+/**
+ * @def TEMP_FILE_P
+ * @brief Get temporary file path using a pattern; will be deleted at test end.
+ *
+ * Use XXXXXX to indicate the position of a random number.
+ */
+#define TEMP_FILE_P(__pat__) (createTempFilePtrn (__pat__))
+
+
+/**
  * @def DURATION
  * @brief Can be used in code to compute the duration of a test in seconds.
  */
@@ -391,6 +414,7 @@ private:
 
     int successful_tests_; /**< Will be updated as the test progresses */
     int failed_tests_; /**< Will be updated as the test progresses */
+    QStringList temp_files_; /**< accumulate here and are deleted in destructor */
 
 protected:
 
@@ -442,6 +466,17 @@ public:
     //! Print the results of the test case.
     void
     printResults () const;
+
+    //! Create a temporary file with a given name and extension
+    QString
+    createTempFile (
+            const QString & extension = QString (),
+            const QString & file_name = QString ());
+
+    //! Create a temporary file with a given pattern (textXXXXXXtext.txt)
+    QString
+    createTempFilePtrn (
+            const QString & s_pattern);
 
 };
 
