@@ -94,7 +94,9 @@ macro(pileIntegrationTest pit_name)
             ${PILE_INTEGRATION_HEADERS}
         )
 
-        # list(APPEND ${pit__name_u}_LIBS )
+        list(APPEND ${pit__name_u}_LIBS
+            ${${pit__name_u}_EXTRA_LIBS})
+        message (STATUS ">>>> ${pit__name_u}_LIBS = ${${pit__name_u}_LIBS}")
 
         list(APPEND ${pit__name_u}_QT_MODS
             ${PILE_INTEGRATION_QT_MODS}
@@ -113,7 +115,6 @@ endmacro()
 
 macro(pileIntegrationAddExes )
 
-    message (STATUS "IIIII  ----------------------------------}")
     foreach(exe_instance ${ARGN})
         if (EXES_DEFINED_INSIDE_COUNT GREATER 20)
             message(FATAL_ERROR "pile-integration supports only 20 executables in config file.")
@@ -125,8 +126,6 @@ macro(pileIntegrationAddExes )
         if (exe_crt_suffix_len LESS 2)
             set (exe_crt_suffix "0${exe_crt_suffix}")
         endif()
-        message (STATUS "IIIII  exe_instance = ${exe_instance}")
-        message (STATUS "IIIII  exe_crt_suffix = ${exe_crt_suffix}")
 
         # for the identifier we will need a string without
         # funky characters

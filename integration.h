@@ -95,7 +95,7 @@
  * @internal
  */
 #define POST_RUN_CHECK \
-    if (!proc->b_started_) { in_test_exec_result = -1; break;}
+    if (!proc->b_started_) { in_test_exec_result = -1; goto end_of_intest;}
 
 
 /**
