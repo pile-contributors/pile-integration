@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QString>
 #include <QStringList>
+#include <QTextStream>
 
 /*  INCLUDES    ============================================================ */
 //
@@ -197,8 +198,7 @@ private:
 
 private:
     QList<Integration*> list_;
-    QFile * fstdout_;
-    QDebug * d_;
+    QTextStream * d_;
     int flags_;
 
     QStringList sl_exclusion_;

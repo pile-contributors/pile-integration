@@ -121,20 +121,12 @@ const char * color_mapping[] = {
 /* ------------------------------------------------------------------------- */
 Manager::Manager() :
     list_(),
-    fstdout_(new QFile()),
-    d_(NULL),
+    d_(new QTextStream(stdout)),
     flags_(PRINT_FAILED | PRINT_COLORS),
     sl_exclusion_(),
     sl_inclusion_()
 {
     singleton_ = this;
-    if (!fstdout_->open (stdout, QIODevice::WriteOnly)) {
-        qDebug() << fstdout_->errorString ();
-        d_ = new QDebug(QtDebugMsg);
-    } else {
-        d_ = new QDebug(fstdout_);
-    }
-    d_->noquote ().nospace ();
 }
 /* ========================================================================= */
 
@@ -392,8 +384,7 @@ void Manager::startColor (intest::Color color)
     if (hasFlag (PRINT_COLORS)) {
         delete singleton_->d_;
         singleton_->fstdout_->flush ();
-        singleton_->d_ = new QDebug(singleton_->fstdout_);
-        singleton_->d_->noquote ().nospace ();
+        singleton_->d_ = new QTextStream (stdout);
 #ifdef PILE_INTEGRATION_WIN32
         HANDLE  hConsole;
         hConsole = GetStdHandle (STD_OUTPUT_HANDLE);
@@ -413,8 +404,7 @@ void Manager::endColor ()
     if (hasFlag (PRINT_COLORS)) {
         delete singleton_->d_;
         singleton_->fstdout_->flush ();
-        singleton_->d_ = new QDebug(singleton_->fstdout_);
-        singleton_->d_->noquote ().nospace ();
+        singleton_->d_ = new QTextStream(stdout);
 #ifdef PILE_INTEGRATION_WIN32
         HANDLE  hConsole;
         hConsole = GetStdHandle (STD_OUTPUT_HANDLE);
