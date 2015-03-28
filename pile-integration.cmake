@@ -31,6 +31,7 @@ set( PILE_INTEGRATION_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/inprocess.cc)
 	
 set( PILE_INTEGRATION_HEADERS
+    ${CMAKE_CURRENT_LIST_DIR}/pile_color.h
     ${CMAKE_CURRENT_LIST_DIR}/inapplication.h
     ${CMAKE_CURRENT_LIST_DIR}/integration.h
     ${CMAKE_CURRENT_LIST_DIR}/inmanager.h

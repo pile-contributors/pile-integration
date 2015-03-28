@@ -18,6 +18,7 @@
 /*  INCLUDES    ------------------------------------------------------------ */
 
 #include "integration_config.h"
+#include "pile_color.h"
 
 #include <QList>
 #include <QProcess>
@@ -38,7 +39,6 @@
 namespace intest {
     class Integration;
     class Process;
-    enum Color;
 }
 /*  DEFINITIONS    ========================================================= */
 //
