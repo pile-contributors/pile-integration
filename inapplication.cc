@@ -202,7 +202,11 @@ void prcess_hide_arguments (const QString & arg)
 /* ------------------------------------------------------------------------- */
 int			main				(int argc, char *argv[])
 {
+
+#   ifdef PILE_INTEGRATION_WIN32
     AttachConsole (ATTACH_PARENT_PROCESS);
+#   endif // PILE_INTEGRATION_WIN32
+
     QCoreApplication app (argc, argv);
     bool b_first = true;
     foreach(const QString & arg, QCoreApplication::arguments ()) {

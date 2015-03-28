@@ -109,7 +109,7 @@ public:
     end ();
 
     //! The printer.
-    static QDebug &
+    static QTextStream &
     d () {
         return *(singleton_->d_);
     }

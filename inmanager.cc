@@ -133,13 +133,8 @@ Manager::Manager() :
 /* ------------------------------------------------------------------------- */
 Manager::~Manager()
 {
-    //foreach(Integration * iter, list_) {
-    //delete iter;
-    //}
+    d_->flush ();
     delete d_;
-    fstdout_->flush ();
-    fstdout_->close ();
-    delete fstdout_;
     singleton_ = NULL;
 }
 /* ========================================================================= */
@@ -382,8 +377,8 @@ void Manager::processEnds (Process * proc)
 void Manager::startColor (intest::Color color)
 {
     if (hasFlag (PRINT_COLORS)) {
+        singleton_->d_->flush ();
         delete singleton_->d_;
-        singleton_->fstdout_->flush ();
         singleton_->d_ = new QTextStream (stdout);
 #ifdef PILE_INTEGRATION_WIN32
         HANDLE  hConsole;
@@ -402,8 +397,8 @@ void Manager::startColor (intest::Color color)
 void Manager::endColor ()
 {
     if (hasFlag (PRINT_COLORS)) {
+        singleton_->d_->flush ();
         delete singleton_->d_;
-        singleton_->fstdout_->flush ();
         singleton_->d_ = new QTextStream(stdout);
 #ifdef PILE_INTEGRATION_WIN32
         HANDLE  hConsole;
